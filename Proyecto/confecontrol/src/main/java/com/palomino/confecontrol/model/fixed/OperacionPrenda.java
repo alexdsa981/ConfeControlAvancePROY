@@ -34,6 +34,9 @@ public class OperacionPrenda {
     @JoinColumn(name = "prenda_id", nullable = false)
     private Prenda prenda;
 
+
+
+
     public String getNombre() {
         return nombre;
     }

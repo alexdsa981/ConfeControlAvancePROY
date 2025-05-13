@@ -20,6 +20,8 @@ public class WebController {
     UsuarioController usuarioController;
     @Autowired
     PrendaController prendaController;
+    @Autowired
+    MarcacionController marcacionController;
 
     //redirige / a /login
     @GetMapping("/")
@@ -86,6 +88,7 @@ public class WebController {
 
     @GetMapping("admin/asistencia")
     public String redirigePaginaMarcaciones(Model model) {
+        marcacionController.listarMarcaciones(model);
         model.addAttribute("SubTitulo", "Historial de Marcaciones");
         model.addAttribute("Titulo", "ConFeControl | Historial de Marcaciones");
         return "admin/asistencia";

@@ -66,22 +66,7 @@ public class SecurityConfig {
                         .requestMatchers("/login/**").permitAll()
                         .requestMatchers("/error/**").permitAll()
                         .requestMatchers("/").permitAll()
-//                        //permiso para todos
-//                        .requestMatchers("/app/usuarios/rol").permitAll()
-//                        .requestMatchers("/app/usuarios/id").permitAll()
-//                        .requestMatchers("/common/**").permitAll()
-//                        //todas las paginas pueden ser accedidas por cualquier usuario logeado, usar el ejemplo de abajo para
-//                        //paginas front que requieren autorización, el resto de paginas pueden ser accedidas por todos, por ejemplo usuario
-//                        //puede ingresar a todas las pagians menos las que tengan /soporte/ o /admin/
-//                        .requestMatchers("/soporte/**").hasAnyAuthority("Admin", "Soporte")
-//                        .requestMatchers("/admin/**").hasAuthority("Admin")
-//                        //poner roles más especificos primero para no sobreponer los permisos globales de los admin/soporte
-//                        // Permitir a los usuarios crear tickets y ver los suyos
-//
-//                        .requestMatchers("/app/usuarios/**").hasAuthority("Admin")
 
-
-                        // Cualquier otra solicitud debe estar autenticada
                         .anyRequest().authenticated())
                 .httpBasic(withDefaults());
 

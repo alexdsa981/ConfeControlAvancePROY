@@ -45,6 +45,7 @@ public class Lote {
     private LocalDate fechaFin;
 
 
+
     public Long getId() {
         return id;
     }

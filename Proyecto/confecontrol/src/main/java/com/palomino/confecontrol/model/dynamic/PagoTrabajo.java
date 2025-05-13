@@ -40,6 +40,45 @@ public class PagoTrabajo {
     private LocalDateTime fecha;
 
 
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(LocalDate fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(LocalDate fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public BigDecimal getTotalAPagar() {
+        return totalAPagar;
+    }
+
+    public void setTotalAPagar(BigDecimal totalAPagar) {
+        this.totalAPagar = totalAPagar;
+    }
+
+    public BigDecimal getSubtotalPago() {
+        return subtotalPago;
+    }
+
+    public void setSubtotalPago(BigDecimal subtotalPago) {
+        this.subtotalPago = subtotalPago;
+    }
+
+    public BigDecimal getSubtotalDescuento() {
+        return subtotalDescuento;
+    }
+
+    public void setSubtotalDescuento(BigDecimal subtotalDescuento) {
+        this.subtotalDescuento = subtotalDescuento;
+    }
 
     public Long getId() {
         return id;

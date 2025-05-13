@@ -140,6 +140,7 @@ public class PrendaController {
             @RequestParam("prendaId") Long prendaId) {
         try {
             OperacionPrenda operacion = new OperacionPrenda();
+            operacion.setNombre(nombre);
             operacion.setPrecioNormal(precioNormal);
             operacion.setPrecioHorasExtra(precioHorasExtra);
             operacion.setPrecioFeriado(precioFeriado);

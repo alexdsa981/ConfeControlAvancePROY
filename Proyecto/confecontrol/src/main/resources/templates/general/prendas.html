@@ -16,9 +16,9 @@
                     </h4>
 
                     <div class="d-flex justify-content-between mb-2">
-                        <input type="text" class="form-control w-50" placeholder="Buscar preda...">
+                        <input type="text" class="form-control w-50" id="busquedaPrenda" placeholder="Buscar preda...">
                         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCrearPrenda">
-                            <i class="bi bi-plus-circle"></i>
+                            <i class="bi bi-plus"></i> Añadir Prenda
                         </button>
 
                     </div>
@@ -33,7 +33,7 @@
                             <th>Acciones</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tbody-prendas">
                         <tr th:each="prenda : ${ListaPrendas}">
                             <td>
                                 <input type="radio"
@@ -86,7 +86,7 @@
                         </h4>
 
                         <button class="btn btn-success" onclick="abrirModalOperacion()">
-                            <i class="bi bi-plus-circle"></i>
+                            <i class="bi bi-plus"></i>
                         </button>
                     </div>
                     <table id="tabla-operaciones" class="table table-striped table-bordered align-middle table-sm">
@@ -120,7 +120,7 @@
                         </h4>
 
                         <button class="btn btn-success me-2" onclick="abrirModalPieza()">
-                            <i class="bi bi-plus-circle"></i>
+                            <i class="bi bi-plus"></i>
                         </button>
                     </div>
                     <table id="tabla-piezas" class="table table-striped table-bordered align-middle table-sm">
@@ -456,6 +456,23 @@
             }
 
 
+        </script>
+
+
+
+        <script>
+            document.getElementById('busquedaPrenda').addEventListener('input', function () {
+                const filtro = this.value.toLowerCase();
+                const tbody = document.getElementById('tbody-prendas');
+
+                if (tbody) {
+                    const filas = tbody.querySelectorAll('tr');
+                    filas.forEach(fila => {
+                        const textoFila = fila.innerText.toLowerCase();
+                        fila.style.display = textoFila.includes(filtro) ? '' : 'none';
+                    });
+                }
+            });
         </script>
 
 

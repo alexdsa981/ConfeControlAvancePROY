@@ -31,6 +31,31 @@ public class DetallePaqueteLote {
 
     String Observacion;
 
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
+    public String getObservacion() {
+        return Observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        Observacion = observacion;
+    }
+
+    public OperacionPrenda getOperacionPrenda() {
+        return operacionPrenda;
+    }
+
+    public void setOperacionPrenda(OperacionPrenda operacionPrenda) {
+        this.operacionPrenda = operacionPrenda;
+    }
+
     public Long getId() {
         return id;
     }

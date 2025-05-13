@@ -28,5 +28,43 @@ public class DetalleTrabajo {
     @Column(nullable = false)
     private BigDecimal monto;
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDateTime fecha) {
+        this.fecha = fecha;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public DetallePaqueteLote getDetallePaqueteLote() {
+        return detallePaqueteLote;
+    }
+
+    public void setDetallePaqueteLote(DetallePaqueteLote detallePaqueteLote) {
+        this.detallePaqueteLote = detallePaqueteLote;
+    }
+
+    public BigDecimal getMonto() {
+        return monto;
+    }
+
+    public void setMonto(BigDecimal monto) {
+        this.monto = monto;
+    }
 }
