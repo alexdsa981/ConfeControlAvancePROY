@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Plantilla Base</title>
+</head>
+<body class="d-flex" th:fragment="layout(content)">
+<!-- Sidebar -->
+<div class="sidebar d-flex flex-column p-3 border-end">
+    <h5 class="text-dark">PALOMINO S.A.C.</h5>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li><a href="/inicio" class="nav-link active"><i class="bi bi-house-door-fill me-2"></i>Inicio</a></li>
+        <li><a href="/admin/dashboard" class="nav-link active"><i class="bi bi-grid-1x2-fill me-2"></i>Dashboard</a>
+        </li>
+        <li><a href="/prendas" class="nav-link"><i class="bi bi-tags-fill me-2"></i>Prendas</a></li>
+        <li><a href="/lotes" class="nav-link"><i class="bi bi-box-seam me-2"></i>Lotes</a></li>
+        <li><a href="/admin/pagos" class="nav-link"><i class="bi bi-cash-stack me-2"></i>Pagos</a></li>
+        <li><a href="/admin/usuarios" class="nav-link"><i class="bi bi-people-fill me-2"></i>Usuarios</a></li>
+        <li><a href="/admin/asistencia" class="nav-link"><i class="bi bi-clock-fill me-2"></i>Asistencia</a></li>
+    </ul>
+</div>
+
+<!-- Main Content Area -->
+<div class="flex-grow-1 d-flex flex-column">
+
+    <nav class="navbar bg-white border-bottom shadow-sm">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <h4 class="navbar-text mb-0" th:text="${SubTitulo}">SubTitulo</h4>
+            <div class="d-flex align-items-center">
+                <span class="navbar-text me-3" th:text="${horaActual}" id="horaActual">Hora Actual</span>
+                <span class="navbar-text me-3" th:text="${nombreUsuario}">Nombre de Usuario</span>
+                <div>
+                    <form action="/app/logout" method="POST">
+                        <button type="submit" class="btn btn-warning">Cerrar Sesión</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="content flex-grow-1 " th:insert="${content}">
+
+
+    </div>
+</div>
+
+<script src="/js/general.js"></script>
+<script src="/imports/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

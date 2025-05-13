@@ -1,0 +1,62 @@
+body { height: 100vh; }
+.sidebar {
+  width: 200px;
+  background-color: #f8f9fa;
+}
+
+.sidebar .nav-link {
+  color: #6f42c1;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Estilo al pasar el mouse (hover) */
+.sidebar .nav-link:hover {
+  background-color: #e9d8fd;
+  color: #6f42c1;
+}
+
+/* Estilo para el link activo */
+.sidebar .nav-link.active {
+  background-color: #e9d8fd;
+  color: #6f42c1;
+}
+
+.content {
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+
+
+
+
+
+
+
+.table-sm th, .table-sm td {
+    font-size: 0.85rem;
+}
+
+
+button.btn i {
+    font-size: 1.2rem;
+}
+
+
+table th, table td {
+    font-size: 0.85rem;  /* Ajuste para todo el texto */
+}
+
+.table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+button.btn {
+    padding: 0.2rem 0.4rem;
+}
+
+
+
+
+
+
