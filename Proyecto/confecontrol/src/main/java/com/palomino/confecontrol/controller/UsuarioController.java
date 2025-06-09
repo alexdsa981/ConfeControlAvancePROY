@@ -2,6 +2,7 @@ package com.palomino.confecontrol.controller;
 
 import com.palomino.confecontrol.model.dynamic.Usuario;
 import com.palomino.confecontrol.model.fixed.RolUsuario;
+import com.palomino.confecontrol.repository.UsuarioRepository;
 import com.palomino.confecontrol.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,6 +19,8 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public Model listarUsuariosActivos(Model model) {
         List<Usuario> listaUsuariosActivos = usuarioService.getListaUsuariosActivos();
@@ -32,6 +35,15 @@ public class UsuarioController {
     public Model listarRoles(Model model){
         List<RolUsuario> listaRoles = usuarioService.getListaRoles();
         model.addAttribute("ListaRoles", listaRoles);
+        return model;
+    }
+
+    public Model listarSupervisores(Model model) {;
+        model.addAttribute("ListaSupervisores", usuarioRepository.findByRolUsuarioId(2l));
+        return model;
+    }
+    public Model listarOperarios(Model model) {;
+        model.addAttribute("ListaOperarios", usuarioRepository.findByRolUsuarioId(3l));
         return model;
     }
 
@@ -59,12 +71,12 @@ public class UsuarioController {
 
             usuarioService.guardarUsuario(usuario);
 
-            return "redirect:/admin/usuarios?success"; // Redirigir con parámetro success
+            return "redirect:/admin/usuarios?success";
 
         } catch (DataIntegrityViolationException e) {
-            return "redirect:/admin/usuarios?error=duplicated"; // Redirigir con parámetro error
+            return "redirect:/admin/usuarios?error=duplicated";
         } catch (Exception e) {
-            return "redirect:/admin/usuarios?error=general"; // Redirigir con parámetro error
+            return "redirect:/admin/usuarios?error=general";
         }
     }
 

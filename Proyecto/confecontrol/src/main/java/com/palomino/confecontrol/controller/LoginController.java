@@ -42,7 +42,7 @@ public class LoginController {
     public ResponseEntity<Void> logout(HttpServletResponse response) throws IOException {
         Cookie jwtCookie = new Cookie("JWT", null);
         jwtCookie.setHttpOnly(true);
-        jwtCookie.setMaxAge(0); // Esto elimina la cookie
+        jwtCookie.setMaxAge(0); // elimina la cookie
         jwtCookie.setPath("/");
         response.addCookie(jwtCookie);
         response.sendRedirect("/login");

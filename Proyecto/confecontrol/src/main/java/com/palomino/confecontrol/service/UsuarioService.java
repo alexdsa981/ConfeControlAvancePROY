@@ -2,9 +2,9 @@ package com.palomino.confecontrol.service;
 
 import com.palomino.confecontrol.model.dynamic.Usuario;
 import com.palomino.confecontrol.model.fixed.RolUsuario;
-import com.palomino.confecontrol.model.security.ConstantesSeguridad;
-import com.palomino.confecontrol.model.security.JwtAuthenticationFilter;
-import com.palomino.confecontrol.model.security.JwtTokenProvider;
+import com.palomino.confecontrol.security.ConstantesSeguridad;
+import com.palomino.confecontrol.security.JwtAuthenticationFilter;
+import com.palomino.confecontrol.security.JwtTokenProvider;
 import com.palomino.confecontrol.repository.RolUsuarioRepository;
 import com.palomino.confecontrol.repository.UsuarioRepository;
 import jakarta.servlet.http.Cookie;
@@ -18,7 +18,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.List;

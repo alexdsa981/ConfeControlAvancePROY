@@ -2,6 +2,7 @@ package com.palomino.confecontrol.controller;
 
 
 import com.palomino.confecontrol.model.fixed.Prenda;
+import com.palomino.confecontrol.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,21 +16,22 @@ import java.util.List;
 
 @Controller
 public class WebController {
-
+    @Autowired
+    UsuarioService usuarioService;
     @Autowired
     UsuarioController usuarioController;
     @Autowired
     PrendaController prendaController;
     @Autowired
     MarcacionController marcacionController;
+    @Autowired
+    LoteController loteController;
 
-    //redirige / a /login
     @GetMapping("/")
     public String redirectToInicio() {
         return "redirect:/login";
     }
 
-    //abre index.html en /login
     @GetMapping("/login")
     public String redirigePaginaLogin(
             @RequestParam(value = "error", required = false) String error,
@@ -39,7 +41,7 @@ public class WebController {
 
         if (authentication != null && authentication.isAuthenticated() &&
                 !authentication.getPrincipal().equals("anonymousUser")) {
-            return "redirect:/inicio"; // Redirige a la vista de inicio
+            return "redirect:/inicio";
         }
 
         model.addAttribute("error", error);
@@ -64,6 +66,11 @@ public class WebController {
     public String redirigePaginaPrenda(@RequestParam(value = "selectedId", required = false) Long selectedId, Model model) {
         prendaController.listarPrendas(model);
         prendaController.prendaSeleccionada(selectedId, model);
+        Boolean isAdmin = false;
+        if (usuarioService.getUsuarioPorId(usuarioService.getIDdeUsuarioLogeado()).getRolUsuario().getId() == 1){
+            isAdmin = true;
+        }
+        model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("SubTitulo", "Gestión de Prendas");
         model.addAttribute("Titulo", "ConFeControl | Gestión de Prendas");
         return "general/prendas";
@@ -71,9 +78,29 @@ public class WebController {
 
     @GetMapping("/lotes")
     public String redirigePaginaLotes(Model model) {
+        prendaController.listarPrendas(model);
+        loteController.listarLotes(model);
+        usuarioController.listarSupervisores(model);
         model.addAttribute("SubTitulo", "Gestión de Lotes");
         model.addAttribute("Titulo", "ConFeControl | Gestión de Lotes");
         return "general/lotes";
+    }
+    @GetMapping("/paquetes")
+    public String redirigePaginaPaquetes(@RequestParam(name = "idLote", required = false) Long idLote, Model model) {
+        loteController.listarPaquetes(model, idLote);
+        loteController.listarLotes(model);
+        usuarioController.listarOperarios(model);
+        model.addAttribute("SubTitulo", "Gestión de Paquetes");
+        model.addAttribute("Titulo", "ConFeControl | Gestión de Paquetes");
+        return "general/paquetes";
+    }
+
+    @GetMapping("/operaciones")
+    public String redirigePaginaOperaciones(@RequestParam(name = "paqueteId", required = false) Long paqueteId, Model model) {
+        loteController.listarDetallePaquetes(model, paqueteId);
+        model.addAttribute("SubTitulo", "Gestión de Operación");
+        model.addAttribute("Titulo", "ConFeControl | Gestión de Operación");
+        return "general/operaciones";
     }
 
     @GetMapping("admin/usuarios")
@@ -106,5 +133,11 @@ public class WebController {
         model.addAttribute("SubTitulo", "Gestión de Pagos");
         model.addAttribute("Titulo", "ConFeControl | Pagos");
         return "admin/pagos";
+    }
+    @GetMapping("admin/pagos/historial")
+    public String redirigePaginaPagosHistorial(Model model) {
+        model.addAttribute("SubTitulo", "Historial de Pagos");
+        model.addAttribute("Titulo", "ConFeControl | Historial de Pagos");
+        return "admin/pagos-historial";
     }
 }

@@ -1,27 +1,79 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Plantilla Base</title>
 </head>
 <body class="d-flex" th:fragment="layout(content)">
-<!-- Sidebar -->
 <div class="sidebar d-flex flex-column p-3 border-end">
     <h5 class="text-dark">PALOMINO S.A.C.</h5>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
-        <li><a href="/inicio" class="nav-link active"><i class="bi bi-house-door-fill me-2"></i>Inicio</a></li>
-        <li><a href="/admin/dashboard" class="nav-link active"><i class="bi bi-grid-1x2-fill me-2"></i>Dashboard</a>
+        <li sec:authorize="hasAnyAuthority('Operario','Administrador','Supervisor')">
+            <a href="/inicio" class="nav-link active">
+                <i class="bi bi-house-door-fill me-2"></i>Inicio
+            </a>
         </li>
-        <li><a href="/prendas" class="nav-link"><i class="bi bi-tags-fill me-2"></i>Prendas</a></li>
-        <li><a href="/lotes" class="nav-link"><i class="bi bi-box-seam me-2"></i>Lotes</a></li>
-        <li><a href="/admin/pagos" class="nav-link"><i class="bi bi-cash-stack me-2"></i>Pagos</a></li>
-        <li><a href="/admin/usuarios" class="nav-link"><i class="bi bi-people-fill me-2"></i>Usuarios</a></li>
-        <li><a href="/admin/asistencia" class="nav-link"><i class="bi bi-clock-fill me-2"></i>Asistencia</a></li>
+
+        <li sec:authorize="hasAuthority('Administrador')">
+            <a href="/admin/dashboard" class="nav-link active">
+                <i class="bi bi-grid-1x2-fill me-2"></i>Dashboard
+            </a>
+        </li>
+
+        <li sec:authorize="hasAnyAuthority('Operario','Administrador','Supervisor')">
+            <a href="/prendas" class="nav-link">
+                <i class="bi bi-tags-fill me-2"></i>Prendas
+            </a>
+        </li>
+
+        <li sec:authorize="hasAnyAuthority('Operario','Administrador','Supervisor')">
+            <a href="/operaciones" class="nav-link">
+                <i class="bi bi-tags-fill me-2"></i>Operaciones
+            </a>
+        </li>
+
+        <!-- Lotes con flecha -->
+        <li sec:authorize="hasAnyAuthority('Operario','Administrador','Supervisor')">
+            <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#submenuLotes" role="button" aria-expanded="false" aria-controls="submenuLotes">
+                <span><i class="bi bi-box-seam me-2"></i>Lotes</span>
+                <i class="bi bi-chevron-down" style="padding-right:5px"></i>
+            </a>
+            <div class="collapse ps-4" id="submenuLotes">
+                <a href="/lotes" class="nav-link subitem">Ver Lotes</a>
+                <a href="/paquetes" class="nav-link subitem">Paquetes</a>
+            </div>
+        </li>
+
+        <!-- Pagos con flecha -->
+        <li sec:authorize="hasAnyAuthority('Operario','Administrador','Supervisor')">
+            <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#submenuPagos" role="button" aria-expanded="false" aria-controls="submenuPagos">
+                <span><i class="bi bi-cash-stack me-2"></i>Pagos</span>
+                <i class="bi bi-chevron-down" style="padding-right:5px"></i>
+            </a>
+            <div class="collapse ps-4" id="submenuPagos">
+                <a href="/admin/pagos" class="nav-link subitem">Realizar Pagos</a>
+                <a href="/admin/pagos/historial" class="nav-link subitem">Historial de Pagos</a>
+            </div>
+        </li>
+
+        <li sec:authorize="hasAuthority('Administrador')">
+            <a href="/admin/usuarios" class="nav-link">
+                <i class="bi bi-people-fill me-2"></i>Usuarios
+            </a>
+        </li>
+
+        <li sec:authorize="hasAuthority('Administrador')">
+            <a href="/admin/asistencia" class="nav-link">
+                <i class="bi bi-clock-fill me-2"></i>Asistencia
+            </a>
+        </li>
     </ul>
+
+
+
 </div>
 
-<!-- Main Content Area -->
 <div class="flex-grow-1 d-flex flex-column">
 
     <nav class="navbar bg-white border-bottom shadow-sm">

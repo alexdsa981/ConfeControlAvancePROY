@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{common/imports :: headImports}">
+</head>
+<body>
+<div th:replace="common/layout :: layout(~{::section})">
+    <section>
+
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center" style="gap: 0.5rem;">
+                <h4><i class="bi bi-gear-fill me-2"></i>Operaciones</h4>
+                <input type="text" class="form-control form-control-sm" style="width: 200px;" placeholder="Buscar paquete">
+            </div>
+        </div>
+
+
+        <table class="table table-bordered table-sm align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Código del Paquete</th>
+                <th>Cantidad</th>
+                <th>Operación</th>
+                <th>Estado</th>
+                <th>Observaciones</th>
+                <th>Operario Responsable</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="detalle : ${ListaDetallePaquetes}">
+                <!-- Código del paquete -->
+                <td th:text="${detalle.paqueteLote.codigo}"></td>
+
+                <!-- Cantidad -->
+                <td th:text="${detalle.paqueteLote.cantidad + ' prendas'}"></td>
+
+                <!-- Operación -->
+                <td th:text="${detalle.operacionPrenda.nombre}"></td>
+
+                <!-- Estado con clases -->
+                <td>
+            <span th:text="${detalle.isTerminado} ? 'Terminado' : 'Pendiente'"
+                  th:classappend="${detalle.isTerminado} ? 'badge bg-success' : 'badge bg-warning text-dark'"></span>
+                </td>
+
+                <!-- Observaciones con tipo descuento incluido -->
+                <td>
+                    <span th:text="${detalle.descripcionObservacion != null and !#strings.isEmpty(detalle.descripcionObservacion) ? detalle.descripcionObservacion : 'Sin observaciones'}"></span>
+                    <br th:if="${detalle.tipoDescuento != null}" />
+                    <small th:if="${detalle.tipoDescuento != null}" th:text="'Descuento: ' + detalle.tipoDescuento.nombre"></small>
+                </td>
+
+
+                <!-- Operario con color rojo si no asignado -->
+                <td>
+                    <span th:if="${detalle.trabajador != null}" th:text="${detalle.trabajador.nombre}"></span>
+                    <span th:if="${detalle.trabajador == null}" class="text-danger fw-bold">No asignado</span>
+                </td>
+
+                <!-- Botón de acción -->
+                <td>
+                    <button class="btn btn-outline-success btn-sm me-2"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalObservacion"
+                            th:attr="data-id=${detalle.id}">
+                        <i class="bi bi-check-lg"></i>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+
+
+        <div class="d-flex justify-content-end small text-muted">
+            <div>1-10 de 30</div>
+            <div class="ms-3">
+                <i class="bi bi-chevron-left"></i>
+                <i class="bi bi-chevron-right"></i>
+            </div>
+        </div>
+
+
+
+        <!-- Modal de observación -->
+        <div class="modal fade" id="modalObservacion" tabindex="-1" aria-labelledby="modalObservacionLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalObservacionLabel">Conformidad de Operación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formObservacion">
+                            <!-- Select de observaciones -->
+                            <div class="mb-3">
+                                <label for="selectObservacion" class="form-label">Tipo de observación</label>
+                                <select class="form-select" id="selectObservacion" required>
+                                    <option value="" selected disabled>Seleccione una opción</option>
+                                    <option value="Observación 1">Observación 1</option>
+                                    <option value="Observación 2">Observación 2</option>
+                                    <option value="Observación 3">Observación 3</option>
+                                    <!-- Puedes cargar estas desde el backend si lo deseas -->
+                                </select>
+                            </div>
+
+                            <!-- Textarea de comentarios no redimensionable -->
+                            <div class="mb-3">
+                                <label for="comentarios" class="form-label">Comentarios</label>
+                                <textarea class="form-control" id="comentarios" rows="3" style="resize: none;" placeholder="Escribe un comentario..."></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="guardarObservacion()">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <script>
+            function guardarObservacion() {
+              const tipo = document.getElementById("selectObservacion").value;
+              const comentario = document.getElementById("comentarios").value.trim();
+
+              if (!tipo) {
+                Swal.fire("Campo requerido", "Seleccione un tipo de observación.", "warning");
+                return;
+              }
+
+              // Aquí podrías enviar los datos con AJAX o fetch
+              console.log({ tipo, comentario });
+
+              Swal.fire("Guardado", "La observación fue registrada.", "success");
+
+              // Cerrar modal y resetear
+              document.getElementById("formObservacion").reset();
+              const modal = bootstrap.Modal.getInstance(document.getElementById('modalObservacion'));
+              modal.hide();
+            }
+        </script>
+
+
+    </section>
+</div>
+</body>
+</html>

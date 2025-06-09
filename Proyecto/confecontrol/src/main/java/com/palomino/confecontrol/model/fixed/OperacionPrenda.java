@@ -2,15 +2,25 @@ package com.palomino.confecontrol.model.fixed;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
-
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class OperacionPrenda {
 
-    public OperacionPrenda() {
+    public OperacionPrenda(String nombre, BigDecimal precioNormal, BigDecimal precioHorasExtra, BigDecimal precioFeriado, Boolean isActive, Prenda prenda) {
+        this.nombre = nombre;
+        this.precioNormal = precioNormal;
+        this.precioHorasExtra = precioHorasExtra;
+        this.precioFeriado = precioFeriado;
+        this.isActive = isActive;
+        this.prenda = prenda;
     }
-
 
     @Id
     @Column(name = "id_operacion_prenda")
@@ -35,61 +45,4 @@ public class OperacionPrenda {
     private Prenda prenda;
 
 
-
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public Prenda getPrenda() {
-        return prenda;
-    }
-
-    public void setPrenda(Prenda prenda) {
-        this.prenda = prenda;
-    }
-
-    public BigDecimal getPrecioFeriado() {
-        return precioFeriado;
-    }
-
-    public void setPrecioFeriado(BigDecimal precioFeriado) {
-        this.precioFeriado = precioFeriado;
-    }
-
-    public BigDecimal getPrecioHorasExtra() {
-        return precioHorasExtra;
-    }
-
-    public void setPrecioHorasExtra(BigDecimal precioHorasExtra) {
-        this.precioHorasExtra = precioHorasExtra;
-    }
-
-    public BigDecimal getPrecioNormal() {
-        return precioNormal;
-    }
-
-    public void setPrecioNormal(BigDecimal precioNormal) {
-        this.precioNormal = precioNormal;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
 }

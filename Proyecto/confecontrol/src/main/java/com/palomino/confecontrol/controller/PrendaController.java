@@ -32,7 +32,7 @@ public class PrendaController {
     public  Model prendaSeleccionada(Long selectedId, Model model){
         List<Prenda> prendas = prendaRepository.findAll();
         if (selectedId == null && !prendas.isEmpty()) {
-            selectedId = prendas.get(0).getId(); // selecciona la primera prenda si no se pasó ninguna
+            selectedId = prendas.get(0).getId();
         }
         model.addAttribute("selectedId", selectedId);
         return model;
@@ -104,7 +104,7 @@ public class PrendaController {
             PiezaPrenda pieza = new PiezaPrenda();
             pieza.setNombre(nombre);
             pieza.setCantidad(cantidad);
-            pieza.setActive(true);
+            pieza.setIsActive(true);
             pieza.setPrenda(prendaRepository.findById(prendaId).orElse(null));
             piezaPrendaRepository.save(pieza);
             return "redirect:/prendas?success&selectedId=" + pieza.getPrenda().getId();
@@ -144,7 +144,7 @@ public class PrendaController {
             operacion.setPrecioNormal(precioNormal);
             operacion.setPrecioHorasExtra(precioHorasExtra);
             operacion.setPrecioFeriado(precioFeriado);
-            operacion.setActive(true);
+            operacion.setIsActive(true);
             operacion.setPrenda(prendaRepository.findById(prendaId).orElse(null));
             operacionPrendaRepository.save(operacion);
             return "redirect:/prendas?success&selectedId=" + operacion.getPrenda().getId();
@@ -179,7 +179,7 @@ public class PrendaController {
     @GetMapping("/activar/{id}")
     public String activarPrenda(@PathVariable Long id) {
         Prenda prenda = prendaRepository.findById(id).get();
-        prenda.setActive(true);
+        prenda.setIsActive(true);
         prendaRepository.save(prenda);
         return "redirect:/prendas?success&selectedId=" + prenda.getId();
     }
@@ -188,7 +188,7 @@ public class PrendaController {
     @GetMapping("/desactivar/{id}")
     public String desactivarPrenda(@PathVariable Long id) {
         Prenda prenda = prendaRepository.findById(id).get();
-        prenda.setActive(false);
+        prenda.setIsActive(false);
         prendaRepository.save(prenda);
         return "redirect:/prendas?success&selectedId=" + prenda.getId();
     }
@@ -197,7 +197,7 @@ public class PrendaController {
     @GetMapping("/pieza/activar/{id}")
     public String activarPieza(@PathVariable Long id) {
         PiezaPrenda pieza = piezaPrendaRepository.findById(id).get();
-        pieza.setActive(true);
+        pieza.setIsActive(true);
         piezaPrendaRepository.save(pieza);
         return "redirect:/prendas?success&selectedId=" + pieza.getPrenda().getId();
     }
@@ -206,7 +206,7 @@ public class PrendaController {
     @GetMapping("/pieza/desactivar/{id}")
     public String desactivarPieza(@PathVariable Long id) {
         PiezaPrenda pieza = piezaPrendaRepository.findById(id).get();
-        pieza.setActive(false);
+        pieza.setIsActive(false);
         piezaPrendaRepository.save(pieza);
         return "redirect:/prendas?success&selectedId=" + pieza.getPrenda().getId();
     }
@@ -215,7 +215,7 @@ public class PrendaController {
     @GetMapping("/operacion/activar/{id}")
     public String activarOperacion(@PathVariable Long id) {
         OperacionPrenda operacion = operacionPrendaRepository.findById(id).get();
-        operacion.setActive(true);
+        operacion.setIsActive(true);
         operacionPrendaRepository.save(operacion);
         return "redirect:/prendas?success&selectedId=" + operacion.getPrenda().getId();
     }
@@ -224,7 +224,7 @@ public class PrendaController {
     @GetMapping("/operacion/desactivar/{id}")
     public String desactivarOperacion(@PathVariable Long id) {
         OperacionPrenda operacion = operacionPrendaRepository.findById(id).get();
-        operacion.setActive(false);
+        operacion.setIsActive(false);
         operacionPrendaRepository.save(operacion);
         return "redirect:/prendas?success&selectedId=" + operacion.getPrenda().getId();
     }

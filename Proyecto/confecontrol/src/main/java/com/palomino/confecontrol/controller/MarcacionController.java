@@ -44,8 +44,8 @@ public class MarcacionController {
             if (optionalUser.isPresent()) {
                 Usuario user = optionalUser.get();
 
-                // Verificar si el usuario está activo
-                if (!user.getActive()) {
+
+                if (!user.getIsActive()) {
                     return "redirect:/marcacion?error=usuarioInactivo";
                 }
 
@@ -92,7 +92,7 @@ public class MarcacionController {
                     Marcacion ultimaMarcacion = marcaciones.get(marcaciones.size() - 1);
 
                     LocalTime horaActual = LocalTime.now();
-                    LocalTime salidaLimite = LocalTime.of(17, 0);  // 5:00 PM
+                    LocalTime salidaLimite = LocalTime.of(17, 0);
 
                     ultimaMarcacion.setHoraSalida(horaActual);
 

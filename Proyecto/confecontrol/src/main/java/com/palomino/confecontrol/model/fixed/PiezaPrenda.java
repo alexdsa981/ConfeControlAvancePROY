@@ -2,10 +2,21 @@ package com.palomino.confecontrol.model.fixed;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class PiezaPrenda {
-    public PiezaPrenda() {
+
+    public PiezaPrenda(String nombre, Integer cantidad, Boolean isActive, Prenda prenda) {
+        this.nombre = nombre;
+        this.cantidad = cantidad;
+        this.isActive = isActive;
+        this.prenda = prenda;
     }
 
     @Id
@@ -28,43 +39,5 @@ public class PiezaPrenda {
     private Prenda prenda;
 
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public Integer getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(Integer cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
-
-    public Prenda getPrenda() {
-        return prenda;
-    }
-
-    public void setPrenda(Prenda prenda) {
-        this.prenda = prenda;
-    }
 }

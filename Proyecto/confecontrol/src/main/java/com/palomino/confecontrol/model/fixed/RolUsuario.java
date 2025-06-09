@@ -3,13 +3,19 @@ package com.palomino.confecontrol.model.fixed;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.palomino.confecontrol.model.dynamic.Usuario;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
-
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class RolUsuario {
-    public RolUsuario() {
+    public RolUsuario(String nombre) {
+        this.nombre = nombre;
     }
 
     @Id
@@ -23,27 +29,5 @@ public class RolUsuario {
     @OneToMany(mappedBy = "rolUsuario")
     private List<Usuario> listaUsuarios;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public List<Usuario> getListaUsuarios() {
-        return listaUsuarios;
-    }
-
-    public void setListaUsuarios(List<Usuario> listaUsuarios) {
-        this.listaUsuarios = listaUsuarios;
-    }
 }

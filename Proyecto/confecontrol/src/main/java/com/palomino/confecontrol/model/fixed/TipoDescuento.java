@@ -1,10 +1,21 @@
 package com.palomino.confecontrol.model.fixed;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.math.BigDecimal;
+
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class TipoDescuento {
-    public TipoDescuento() {
+
+    public TipoDescuento(String nombre, String descripcion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
     }
 
     @Id
@@ -14,20 +25,8 @@ public class TipoDescuento {
 
     @Column(nullable = false)
     private String nombre;
+    private String descripcion;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
 }
