@@ -13,4 +13,9 @@ import java.util.List;
 public interface LoteRepository extends JpaRepository<Lote, Long> {
     @Query("SELECT COUNT(l) FROM Lote l WHERE l.fechaCreacion = :fecha")
     long countByFechaCreacion(@Param("fecha") LocalDate fecha);
+
+    List<Lote> findByIsActiveTrue();
+    List<Lote> findByIsActiveFalse();
+    List<Lote> findByIsActiveTrueAndIsTerminadoFalse();
+
 }

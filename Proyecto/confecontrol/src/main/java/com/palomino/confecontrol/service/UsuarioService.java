@@ -131,15 +131,14 @@ public class UsuarioService {
         try {
             Optional<Usuario> optionalUsuario = getUsuarioPorUsername(username);
 
-
             if (optionalUsuario.isEmpty()) {
                 response.sendRedirect("/login?error=badCredentials&username=" + username);
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
 
-            Usuario usuarioTicket = optionalUsuario.get();
+            Usuario usuario = optionalUsuario.get();
 
-            if (!usuarioTicket.getIsActive()) {
+            if (!usuario.getIsActive()) {
                 response.sendRedirect("/login?error=inactive&username=" + username);
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
@@ -157,17 +156,32 @@ public class UsuarioService {
             jwtCookie.setPath("/");
             response.addCookie(jwtCookie);
 
-            if (!usuarioTicket.getChangedPass()) {
-                response.sendRedirect("/inicio?changePassword");
+            if (!usuario.getChangedPass()) {
+                response.sendRedirect("/lotes?changePassword");
                 return ResponseEntity.ok().build();
             }
 
-            // LOGIN EXITOSO
-            response.sendRedirect("/inicio");
+            // Redirección según el rol
+            String rol = usuario.getRolUsuario().getNombre(); // Suponiendo que tienes un getRol().getNombre()
+
+            switch (rol) {
+                case "Administrador":
+                    response.sendRedirect("/lotes");
+                    break;
+                case "Operario":
+                    response.sendRedirect("/operaciones");
+                    break;
+                case "Supervisor":
+                    response.sendRedirect("/paquetes");
+                    break;
+                default:
+                    response.sendRedirect("/login?error=unauthorized&username=" + username);
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+
             return ResponseEntity.ok().build();
 
         } catch (BadCredentialsException e) {
-            System.out.println(e.getMessage());
             response.sendRedirect("/login?error=badCredentials&username=" + username);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (Exception e) {
@@ -175,6 +189,7 @@ public class UsuarioService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
 
 }

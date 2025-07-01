@@ -22,3 +22,103 @@ navLinks.forEach(link => {
     link.classList.remove('active');
   }
 });
+
+
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const btn = document.querySelector(".notificaciones-btn");
+        const contador = document.querySelector(".notificaciones-contador");
+        const dropdown = document.querySelector(".notificaciones-dropdown");
+
+        if (!btn || !contador || !dropdown) {
+            console.warn('Elementos de notificación no encontrados.');
+            return;
+        }
+
+        async function actualizarContador() {
+            try {
+                const response = await fetch('/app/notificaciones');
+                if (response.ok) {
+                    const notificaciones = await response.json();
+                    const noLeidas = notificaciones.filter(n => !n.leido).length;
+
+                    if (noLeidas > 0) {
+                        contador.textContent = noLeidas;
+                        contador.classList.remove('d-none');
+                    } else {
+                        reiniciarContador();
+                    }
+                }
+            } catch (error) {
+                console.error('Error al actualizar el contador:', error);
+            }
+        }
+
+        async function cargarNotificaciones() {
+            try {
+                const response = await fetch('/app/notificaciones');
+                if (response.ok) {
+                    const notificaciones = await response.json();
+                    dropdown.innerHTML = '';
+
+                    if (notificaciones.length > 0) {
+                        notificaciones.forEach(n => {
+                            const item = document.createElement('li');
+                            item.innerHTML = `
+                                <a style="text-decoration: none" href="${n.url}" class="notificacion-item" data-id="${n.id}">
+                                    <div class="dropdown-item ${n.abierto ? 'notificacion-abierta' : ''}">
+                                        <strong>${n.idFormateado}</strong>
+                                        <p class="mb-0">${n.descripcion}</p>
+                                        <small class="text-muted">${n.fechaFormateada} ${n.horaFormateada} ${n.abierto ? '- Abierto' : ''}</small>
+                                    </div>
+                                </a>
+                            `;
+                            dropdown.appendChild(item);
+                        });
+                    } else {
+                        dropdown.innerHTML = `<li><span class="dropdown-item-text text-muted">Sin notificaciones nuevas</span></li>`;
+                    }
+
+                    dropdown.querySelectorAll('.notificacion-item').forEach(item => {
+                        item.addEventListener('click', async (e) => {
+                            const id = e.currentTarget.dataset.id;
+                            await marcarNotificacionComoAbierto(id);
+                            e.currentTarget.querySelector('.dropdown-item').classList.add('notificacion-abierta');
+                        });
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar notificaciones:', error);
+            }
+        }
+
+        async function marcarNotificacionComoAbierto(id) {
+            try {
+                await fetch(`/app/notificaciones/marcar-abierto/${id}`, { method: 'POST' });
+            } catch (error) {
+                console.error('Error al marcar como abierto:', error);
+            }
+        }
+
+        async function marcarNotificacionesComoLeidas() {
+            try {
+                const response = await fetch('/app/notificaciones/marcar-leidas', { method: 'POST' });
+                if (response.ok) reiniciarContador();
+            } catch (error) {
+                console.error('Error al marcar como leídas:', error);
+            }
+        }
+
+        function reiniciarContador() {
+            contador.textContent = '0';
+            contador.classList.add('d-none');
+        }
+
+        btn.addEventListener('click', async () => {
+            await marcarNotificacionesComoLeidas();
+            await cargarNotificaciones();
+        });
+
+        actualizarContador();
+    });

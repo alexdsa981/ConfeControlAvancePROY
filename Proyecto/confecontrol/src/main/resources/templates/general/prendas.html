@@ -29,7 +29,7 @@
                             <th>Código</th>
                             <th>Nombre</th>
                             <th>Precio</th>
-                            <th>Estado</th>
+                            <th sec:authorize="hasAuthority('Administrador')">Estado</th>
                             <th sec:authorize="hasAuthority('Administrador')">Acciones</th>
                         </tr>
                         </thead>
@@ -47,7 +47,8 @@
                             <td th:text="${prenda.codigo}">PR001</td>
                             <td th:text="${prenda.nombre}">Nombre Prenda</td>
                             <td th:text="${prenda.costoTotal}">100.00</td>
-                            <td>
+
+                            <td sec:authorize="hasAuthority('Administrador')">
                             <span th:classappend="${prenda.isActive} ? 'badge bg-success' : 'badge bg-danger'"
                                   th:text="${prenda.isActive} ? 'Activo' : 'Inactivo'">Activo</span>
                             </td>
@@ -96,7 +97,7 @@
                             <th>Precio Normal</th>
                             <th>Precio Horas Extra</th>
                             <th>Precio Feriado</th>
-                            <th>Estado</th>
+                            <th sec:authorize="hasAuthority('Administrador')">Estado</th>
                             <th sec:authorize="hasAuthority('Administrador')">Acciones</th>
                         </tr>
                         </thead>
@@ -128,8 +129,8 @@
                         <tr>
                             <th>Nombre</th>
                             <th>Cantidad</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
+                            <th sec:authorize="hasAuthority('Administrador')">Estado</th>
+                            <th sec:authorize="hasAuthority('Administrador')">Acciones</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -372,6 +373,7 @@
                 modal.show();
             }
         </script>
+
         <script th:inline="javascript">
             var isAdmin = [[${isAdmin}]];
         </script>
@@ -388,24 +390,30 @@
                         tbody.innerHTML = "";
 
                         data.forEach(op => {
-                            const accionBtn = op.active
-                                ? `<a href="/app/prendas/operacion/desactivar/${op.id}" class="btn btn-sm btn-outline-danger" ${!isAdmin ? 'style="display:none;"' : ''}><i class="bi bi-x-circle"></i></a>`
-                                : `<a href="/app/prendas/operacion/activar/${op.id}" class="btn btn-sm btn-outline-success" ${!isAdmin ? 'style="display:none;"' : ''}><i class="bi bi-check-circle"></i></a>`;
-
-                            tbody.innerHTML += `
+                            let fila = `
                                 <tr>
                                     <td>${op.nombre}</td>
                                     <td>S/ ${op.precioNormal.toFixed(2)}</td>
                                     <td>S/ ${op.precioHorasExtra.toFixed(2)}</td>
-                                    <td>S/ ${op.precioFeriado.toFixed(2)}</td>
-                                    <td><span class="badge ${op.active ? 'bg-success' : 'bg-danger'}">${op.active ? 'Activo' : 'Inactivo'}</span></td>
+                                    <td>S/ ${op.precioFeriado.toFixed(2)}</td>`;
+
+                            if (isAdmin) {
+                                const accionBtn = op.isActive
+                                    ? `<a href="/app/prendas/operacion/desactivar/${op.id}" class="btn btn-sm btn-outline-danger"><i class="bi bi-x-circle"></i></a>`
+                                    : `<a href="/app/prendas/operacion/activar/${op.id}" class="btn btn-sm btn-outline-success"><i class="bi bi-check-circle"></i></a>`;
+
+                                fila += `
+                                    <td><span class="badge ${op.isActive ? 'bg-success' : 'bg-danger'}">${op.isActive ? 'Activo' : 'Inactivo'}</span></td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-primary me-1" onclick='editarOperacion(${JSON.stringify(op)})'>
                                           <i class="bi bi-pencil"></i>
                                         </button>
                                         ${accionBtn}
-                                    </td>
-                                </tr>`;
+                                    </td>`;
+                            }
+
+                            fila += `</tr>`;
+                            tbody.innerHTML += fila;
                         });
                     });
 
@@ -417,25 +425,32 @@
                         tbody.innerHTML = "";
 
                         data.forEach(pieza => {
-                            const accionBtn = pieza.active
-                                ? `<a href="/app/prendas/pieza/desactivar/${pieza.id}" class="btn btn-sm btn-outline-danger" ${!isAdmin ? 'style="display:none;"' : ''}><i class="bi bi-x-circle"></i></a>`
-                                : `<a href="/app/prendas/pieza/activar/${pieza.id}" class="btn btn-sm btn-outline-success" ${!isAdmin ? 'style="display:none;"' : ''}><i class="bi bi-check-circle"></i></a>`;
-
-                            tbody.innerHTML += `
+                            let fila = `
                                 <tr>
                                     <td>${pieza.nombre}</td>
-                                    <td>${pieza.cantidad}</td>
-                                    <td><span class="badge ${pieza.active ? 'bg-success' : 'bg-danger'}">${pieza.active ? 'Activo' : 'Inactivo'}</span></td>
+                                    <td>${pieza.cantidad}</td>`;
+
+                            if (isAdmin) {
+                                const accionBtn = pieza.isActive
+                                    ? `<a href="/app/prendas/pieza/desactivar/${pieza.id}" class="btn btn-sm btn-outline-danger"><i class="bi bi-x-circle"></i></a>`
+                                    : `<a href="/app/prendas/pieza/activar/${pieza.id}" class="btn btn-sm btn-outline-success"><i class="bi bi-check-circle"></i></a>`;
+
+                                fila += `
+                                    <td><span class="badge ${pieza.isActive ? 'bg-success' : 'bg-danger'}">${pieza.isActive ? 'Activo' : 'Inactivo'}</span></td>
                                     <td>
                                         <button class="btn btn-sm btn-outline-primary me-1" onclick='editarPieza(${JSON.stringify(pieza)})'>
                                           <i class="bi bi-pencil"></i>
                                         </button>
                                         ${accionBtn}
-                                    </td>
-                                </tr>`;
+                                    </td>`;
+                            }
+
+                            fila += `</tr>`;
+                            tbody.innerHTML += fila;
                         });
                     });
             }
+
 
         </script>
 

@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface PaqueteLoteRepository extends JpaRepository<PaqueteLote, Long> {
     List<PaqueteLote> findByLoteId(Long idLote);
+    List<PaqueteLote> findByLoteIsActiveTrue();
 
 }

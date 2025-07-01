@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:insert="~{common/imports :: headImports}">
 </head>
 <body>
@@ -63,13 +63,70 @@
                     <button class="btn btn-outline-success btn-sm me-2"
                             data-bs-toggle="modal"
                             data-bs-target="#modalObservacion"
-                            th:attr="data-id=${detalle.id}">
+                            th:attr="data-id=${detalle.id}"
+                            th:disabled="${detalle.trabajador == null or detalle.isTerminado}" sec:authorize="hasAnyAuthority('Administrador','Supervisor')">
                         <i class="bi bi-check-lg"></i>
                     </button>
+
+                    <button class="btn btn-sm me-2"
+                            th:classappend="${detalle.trabajador == null or detalle.isTerminado or detalle.isNotificado} ? 'btn-secondary' : 'btn-outline-info'"
+                            id="btn-avisar-[[${detalle.id}]]"
+                            th:data-id="${detalle.id}"
+                            onclick="avisarSupervisorDesdeBoton(this)"
+                            th:disabled="${detalle.trabajador == null or detalle.isTerminado or detalle.isNotificado}"
+                            sec:authorize="hasAuthority('Operario')">
+                        <i class="bi bi-bell"></i> Avisar a supervisor
+                    </button>
+
+
+
                 </td>
+
             </tr>
             </tbody>
         </table>
+
+        <script th:inline="javascript" sec:authorize="hasAuthority('Operario')">
+            function avisarSupervisorDesdeBoton(btn) {
+                const id = btn.dataset.id;
+                avisarSupervisor(id);
+            }
+
+            function avisarSupervisor(detalleId) {
+                fetch('/app/notificaciones/avisar-supervisor/' + detalleId, {
+                    method: 'POST'
+                }).then(res => {
+                    if (res.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Supervisor notificado',
+                            text: 'El supervisor ha sido avisado para revisar la operación.',
+                            confirmButtonColor: '#0d6efd'
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'No se pudo notificar',
+                            text: 'Intenta nuevamente más tarde.',
+                            confirmButtonColor: '#dc3545'
+                        });
+                    }
+                }).catch(() => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de red',
+                        text: 'No se pudo contactar con el servidor.',
+                        confirmButtonColor: '#dc3545'
+                    });
+                });
+            }
+        </script>
+
+
+
+
 
 
 
@@ -93,22 +150,24 @@
                     </div>
                     <div class="modal-body">
                         <form id="formObservacion">
-                            <!-- Select de observaciones -->
+                            <input type="hidden" id="detalleId" name="detalleId">
+
+                            <!-- Select dinámico -->
                             <div class="mb-3">
                                 <label for="selectObservacion" class="form-label">Tipo de observación</label>
-                                <select class="form-select" id="selectObservacion" required>
-                                    <option value="" selected disabled>Seleccione una opción</option>
-                                    <option value="Observación 1">Observación 1</option>
-                                    <option value="Observación 2">Observación 2</option>
-                                    <option value="Observación 3">Observación 3</option>
-                                    <!-- Puedes cargar estas desde el backend si lo deseas -->
+                                <select class="form-select" id="selectObservacion">
+                                    <option value="" selected>Sin observación</option>
+                                    <option th:each="tipo : ${ListaTiposDescuento}"
+                                            th:value="${tipo.id}"
+                                            th:text="${tipo.nombre}">
+                                    </option>
                                 </select>
                             </div>
 
-                            <!-- Textarea de comentarios no redimensionable -->
+                            <!-- Textarea -->
                             <div class="mb-3">
                                 <label for="comentarios" class="form-label">Comentarios</label>
-                                <textarea class="form-control" id="comentarios" rows="3" style="resize: none;" placeholder="Escribe un comentario..."></textarea>
+                                <textarea class="form-control bg-light" id="comentarios" rows="3" style="resize: none;" placeholder="Escribe un comentario..." readonly></textarea>
                             </div>
                         </form>
                     </div>
@@ -122,27 +181,77 @@
 
 
 
-        <script>
+        <script th:inline="javascript" sec:authorize="hasAnyAuthority('Administrador','Supervisor')">
+            // Abrir modal y recibir ID
+            document.querySelectorAll("[data-bs-target='#modalObservacion']").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const id = this.getAttribute("data-id");
+                    document.getElementById("detalleId").value = id;
+                    document.getElementById("formObservacion").reset();
+                    bloquearTextarea(); // Inicializa textarea deshabilitado
+                });
+            });
+
+            // Controla el estado del textarea
+            document.getElementById("selectObservacion").addEventListener("change", bloquearTextarea);
+
+            function bloquearTextarea() {
+                const select = document.getElementById("selectObservacion");
+                const textarea = document.getElementById("comentarios");
+                if (!select.value) {
+                    textarea.setAttribute("readonly", true);
+                    textarea.classList.add("bg-light");
+                    textarea.value = "";
+                } else {
+                    textarea.removeAttribute("readonly");
+                    textarea.classList.remove("bg-light");
+                }
+            }
+
             function guardarObservacion() {
-              const tipo = document.getElementById("selectObservacion").value;
-              const comentario = document.getElementById("comentarios").value.trim();
+                const tipo = document.getElementById("selectObservacion").value;
+                const comentario = document.getElementById("comentarios").value.trim();
+                const id = document.getElementById("detalleId").value;
 
-              if (!tipo) {
-                Swal.fire("Campo requerido", "Seleccione un tipo de observación.", "warning");
-                return;
-              }
+                if (!id || id === "null") {
+                    Swal.fire("Error", "ID de operación no válido.", "error");
+                    return;
+                }
 
-              // Aquí podrías enviar los datos con AJAX o fetch
-              console.log({ tipo, comentario });
+                const formData = new URLSearchParams();
+                formData.append("id", id);
 
-              Swal.fire("Guardado", "La observación fue registrada.", "success");
+                if (tipo) {
+                    formData.append("tipoObservacion", tipo);
+                    formData.append("comentario", comentario);
+                }
 
-              // Cerrar modal y resetear
-              document.getElementById("formObservacion").reset();
-              const modal = bootstrap.Modal.getInstance(document.getElementById('modalObservacion'));
-              modal.hide();
+                fetch("/app/lote/cambiar-estado-operacion", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: formData
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error("Error al actualizar");
+                    return res.text();
+                })
+                .then(() => {
+                    Swal.fire("Actualizado", "La operación ha sido marcada como realizada.", "success")
+                        .then(() => location.reload());
+                })
+                .catch(err => {
+                    console.error(err);
+                    Swal.fire("Error", "Ocurrió un error al actualizar.", "error");
+                });
+
+                // Cierra el modal y limpia el formulario
+                const modal = bootstrap.Modal.getInstance(document.getElementById('modalObservacion'));
+                modal.hide();
+                document.getElementById("formObservacion").reset();
+                document.getElementById("comentarios").value = "";
             }
         </script>
+
 
 
     </section>

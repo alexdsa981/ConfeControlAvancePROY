@@ -34,7 +34,6 @@ public class Lote {
     @JoinColumn(name = "usuario_id")
     private Usuario creadorLote;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "lote")
     private List<PaqueteLote> listaPaquetes;
 

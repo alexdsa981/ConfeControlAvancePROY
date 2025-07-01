@@ -56,27 +56,65 @@ public class DataInitializer implements CommandLineRunner {
 
             Usuario supervisor = new Usuario();
             supervisor.setChangedPass(true);
-            supervisor.setCorreo("supervisor@sistema.com");
+            supervisor.setCorreo("supervisor1@sistema.com");
             supervisor.setDni("10000002");
             supervisor.setIsActive(true);
-            supervisor.setNombre("Supervisor de Producción");
+            supervisor.setNombre("Supervisor de Producción1");
             supervisor.setNumCelular("900000002");
             supervisor.setPassword(passwordEncriptada);
             supervisor.setUsername("supervisor");
             supervisor.setRolUsuario(rolSupervisor);
             usuarioRepository.save(supervisor);
 
+            Usuario supervisor2 = new Usuario();
+            supervisor2.setChangedPass(true);
+            supervisor2.setCorreo("supervisor2@sistema.com");
+            supervisor2.setDni("11230002");
+            supervisor2.setIsActive(true);
+            supervisor2.setNombre("Supervisor de Producción2");
+            supervisor2.setNumCelular("901232002");
+            supervisor2.setPassword(passwordEncriptada);
+            supervisor2.setUsername("supervisor2");
+            supervisor2.setRolUsuario(rolSupervisor);
+            usuarioRepository.save(supervisor2);
+
+
             Usuario colaborador = new Usuario();
             colaborador.setChangedPass(true);
-            colaborador.setCorreo("operario@sistema.com");
+            colaborador.setCorreo("operario1@sistema.com");
             colaborador.setDni("10000003");
             colaborador.setIsActive(true);
-            colaborador.setNombre("Operario de Línea");
+            colaborador.setNombre("Operario de Línea1");
             colaborador.setNumCelular("900000003");
             colaborador.setPassword(passwordEncriptada);
-            colaborador.setUsername("operario");
+            colaborador.setUsername("operario1");
             colaborador.setRolUsuario(rolOperario);
             usuarioRepository.save(colaborador);
+
+
+            Usuario colaborador2 = new Usuario();
+            colaborador2.setChangedPass(true);
+            colaborador2.setCorreo("operario2@sistema.com");
+            colaborador2.setDni("10003212");
+            colaborador2.setIsActive(true);
+            colaborador2.setNombre("Operario de Línea2");
+            colaborador2.setNumCelular("90323");
+            colaborador2.setPassword(passwordEncriptada);
+            colaborador2.setUsername("operario2");
+            colaborador2.setRolUsuario(rolOperario);
+            usuarioRepository.save(colaborador2);
+
+            Usuario colaborador3 = new Usuario();
+            colaborador3.setChangedPass(true);
+            colaborador3.setCorreo("operario3@sistema.com");
+            colaborador3.setDni("100123212");
+            colaborador3.setIsActive(true);
+            colaborador3.setNombre("Operario de Línea3");
+            colaborador3.setNumCelular("90323");
+            colaborador3.setPassword(passwordEncriptada);
+            colaborador3.setUsername("operario3");
+            colaborador3.setRolUsuario(rolOperario);
+            usuarioRepository.save(colaborador3);
         }
 
         if (tipoDescuentoRepository.count() == 0) {

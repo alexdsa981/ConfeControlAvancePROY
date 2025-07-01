@@ -32,7 +32,11 @@
             </thead>
             <tbody>
             <tr th:each="paquete : ${ListaPaquetes}">
-                <td><strong th:text="${paquete.codigo}"></strong></td>
+                <td>
+                    <a th:href="@{/operaciones(paqueteId=${paquete.id})}">
+                        <strong th:text="${paquete.codigo}"></strong>
+                    </a>
+                </td>
                 <td th:text="${paquete.cantidad} + ' prendas'"></td>
 
                 <td>
@@ -142,7 +146,11 @@
                     const operarioId = document.getElementById("selectOperario").value;
 
                     if (!loteId || !operacionId || !operarioId) {
-                        alert("Complete todos los campos.");
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Campos incompletos',
+                            text: 'Complete todos los campos.',
+                        });
                         return;
                     }
 
@@ -162,18 +170,29 @@
                         return response.text();
                     })
                     .then(msg => {
-                        alert(msg);
-                        // Cierra modal y recarga si deseas
-                        const modal = bootstrap.Modal.getInstance(document.getElementById("modalAsignarOperario"));
-                        modal.hide();
-                        location.reload(); // O actualiza solo la tabla si lo prefieres
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Operario asignado',
+                            text: msg,
+                            timer: 1000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            const modal = bootstrap.Modal.getInstance(document.getElementById("modalAsignarOperario"));
+                            modal.hide();
+                            location.reload();
+                        });
                     })
                     .catch(err => {
-                        alert("Error: " + err.message);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: err.message
+                        });
                     });
                 });
             });
         </script>
+
 
 
 

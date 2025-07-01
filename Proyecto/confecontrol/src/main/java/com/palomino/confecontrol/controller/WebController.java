@@ -1,7 +1,6 @@
 package com.palomino.confecontrol.controller;
 
 
-import com.palomino.confecontrol.model.fixed.Prenda;
 import com.palomino.confecontrol.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -11,7 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.util.Objects;
 
 
 @Controller
@@ -26,6 +25,8 @@ public class WebController {
     MarcacionController marcacionController;
     @Autowired
     LoteController loteController;
+    @Autowired
+    DescuentosController descuentosController;
 
     @GetMapping("/")
     public String redirectToInicio() {
@@ -41,7 +42,7 @@ public class WebController {
 
         if (authentication != null && authentication.isAuthenticated() &&
                 !authentication.getPrincipal().equals("anonymousUser")) {
-            return "redirect:/inicio";
+            return "redirect:/lotes";
         }
 
         model.addAttribute("error", error);
@@ -77,27 +78,34 @@ public class WebController {
     }
 
     @GetMapping("/lotes")
-    public String redirigePaginaLotes(Model model) {
+    public String redirigePaginaLotes(@RequestParam(required = false) Boolean verDesactivados, Model model) {
         prendaController.listarPrendas(model);
-        loteController.listarLotes(model);
+        loteController.listarLotes(model, verDesactivados);
         usuarioController.listarSupervisores(model);
         model.addAttribute("SubTitulo", "Gestión de Lotes");
         model.addAttribute("Titulo", "ConFeControl | Gestión de Lotes");
         return "general/lotes";
     }
+
     @GetMapping("/paquetes")
     public String redirigePaginaPaquetes(@RequestParam(name = "idLote", required = false) Long idLote, Model model) {
         loteController.listarPaquetes(model, idLote);
-        loteController.listarLotes(model);
+        loteController.listarLotesEnPaginaPaquetes(model, idLote); // ← nuevo método
         usuarioController.listarOperarios(model);
         model.addAttribute("SubTitulo", "Gestión de Paquetes");
         model.addAttribute("Titulo", "ConFeControl | Gestión de Paquetes");
         return "general/paquetes";
     }
 
+
     @GetMapping("/operaciones")
     public String redirigePaginaOperaciones(@RequestParam(name = "paqueteId", required = false) Long paqueteId, Model model) {
-        loteController.listarDetallePaquetes(model, paqueteId);
+        if (Objects.equals(usuarioService.getUsuarioPorId(usuarioService.getIDdeUsuarioLogeado()).getRolUsuario().getNombre(), "Operario")){
+            loteController.listarDetallePaquetesParaOperario(model);
+        }else{
+            loteController.listarDetallePaquetes(model, paqueteId);
+            descuentosController.listarTiposDescuento(model);
+        }
         model.addAttribute("SubTitulo", "Gestión de Operación");
         model.addAttribute("Titulo", "ConFeControl | Gestión de Operación");
         return "general/operaciones";
@@ -136,6 +144,19 @@ public class WebController {
     }
     @GetMapping("admin/pagos/historial")
     public String redirigePaginaPagosHistorial(Model model) {
+        model.addAttribute("SubTitulo", "Historial de Pagos");
+        model.addAttribute("Titulo", "ConFeControl | Historial de Pagos");
+        return "admin/pagos-historial";
+    }
+
+    @GetMapping("operario/pagos")
+    public String redirigePaginaPagosOperario(Model model) {
+        model.addAttribute("SubTitulo", "Pago de la Semana");
+        model.addAttribute("Titulo", "ConFeControl | Pago Semanal");
+        return "admin/pagos";
+    }
+    @GetMapping("operario/pagos/historial")
+    public String redirigePaginaPagosHistorialOperario(Model model) {
         model.addAttribute("SubTitulo", "Historial de Pagos");
         model.addAttribute("Titulo", "ConFeControl | Historial de Pagos");
         return "admin/pagos-historial";
